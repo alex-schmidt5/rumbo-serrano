@@ -1,0 +1,113 @@
+    import { Link } from 'react-router-dom';
+
+    export const Home = () => {
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    const esAdmin = usuario.rol === 'admin';
+
+    return (
+        <div style={{ backgroundColor: '#FDFCF7', minHeight: '100vh' }}>
+        
+        {/* Saludo Personalizado Conservado */}
+        <div className="container py-4">
+            <div className="p-4 rounded-4 shadow-sm border d-flex justify-content-between align-items-center" style={{ backgroundColor: '#F0EBE1', borderColor: '#D6CEC2' }}>
+            <div>
+                <h4 className="fw-bold mb-1" style={{ color: '#3A3935' }}>
+                ¡Hola, {usuario.nombre_usuario || 'Viajero'}! 
+                </h4>
+                <p className="mb-0 text-muted small">
+                ¿Listo para explorar la belleza de Calamuchita? Revisá nuestras próximas salidas serranas.
+                </p>
+            </div>
+            {esAdmin && (
+                <Link to="/admin" className="btn btn-sm fw-bold px-3 py-2 text-white shadow-sm" style={{ backgroundColor: '#72C253', borderRadius: '20px' }}>
+                ⚙️ IR AL PANEL DE ADMINISTRADOR
+                </Link>
+            )}
+            </div>
+        </div>
+
+        {/* Hero Banner Estilo "Tu Próxima Aventura" */}
+        <div className="position-relative text-center text-white py-5 px-3" style={{ background: 'linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=80") center/cover no-repeat', minHeight: '380px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div>
+            <h1 className="display-4 fw-extrabold text-uppercase mb-2" style={{ letterSpacing: '2px', textShadow: '2px 2px 4px rgba(0,0,0,0.6)' }}>
+                TU PRÓXIMA <span className="fst-italic fw-light" style={{ textTransform: 'none', fontFamily: 'serif' }}>Aventura</span>
+            </h1>
+            <h2 className="fw-black text-uppercase tracking-wider mb-3" style={{ letterSpacing: '3px', fontSize: '1.8rem' }}>
+                EN CALAMUCHITA
+            </h2>
+            <p className="lead mx-auto" style={{ maxWidth: '600px', fontSize: '0.95rem', opacity: '0.9' }}>
+                Explorá Calamuchita de una manera diferente: más naturaleza, más aventura, más recuerdos.
+            </p>
+            </div>
+        </div>
+
+        {/* Seccion de Categorías / Tarjetas Serranas */}
+        <div className="py-5" style={{ backgroundColor: '#483E33' }} id="actividades">
+            <div className="container">
+            <div className="row g-4">
+                
+                {/* Tarjeta 1 */}
+                <div className="col-md-4">
+                <div className="card h-100 border-0 shadow-lg" style={{ backgroundColor: '#FDFCF7', borderRadius: '12px', overflow: 'hidden' }}>
+                    <div style={{ height: '180px', background: 'url("https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=600&q=80") center/cover', display: 'flex', alignItems: 'flex-end', padding: '15px' }}>
+                    <h5 className="text-white fw-bold m-0" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.8)' }}>Salida a la naturaleza</h5>
+                    </div>
+                    <div className="card-body p-4 d-flex flex-column justify-content-between">
+                    <ul className="list-unstyled text-muted small lh-lg mb-4">
+                        <li>🌲 Kayak en Embalse</li>
+                        <li>⛰️ Trekking Cerro Champaquí</li>
+                        <li>🐎 Cabalgata Serrana</li>
+                        <li>🦅 Avistaje de Aves</li>
+                    </ul>
+                    <button className="btn text-white fw-bold w-100 py-2" style={{ backgroundColor: '#FF8A00', borderRadius: '25px', letterSpacing: '1px' }}>
+                        VER MÁS
+                    </button>
+                    </div>
+                </div>
+                </div>
+
+                {/* Tarjeta 2 */}
+                <div className="col-md-4">
+                <div className="card h-100 border-0 shadow-lg" style={{ backgroundColor: '#FDFCF7', borderRadius: '12px', overflow: 'hidden' }}>
+                    <div style={{ height: '180px', background: 'url("https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&w=600&q=80") center/cover', display: 'flex', alignItems: 'flex-end', padding: '15px' }}>
+                    <h5 className="text-white fw-bold m-0" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.8)' }}>Escapada romántica</h5>
+                    </div>
+                    <div className="card-body p-4 d-flex flex-column justify-content-between">
+                    <ul className="list-unstyled text-muted small lh-lg mb-4">
+                        <li>🏡 Cabaña en La Cumbrecita</li>
+                        <li>🍷 Experiencia Astroturismo</li>
+                        <li>🍽️ Bodegas y Viñedos</li>
+                    </ul>
+                    <button className="btn text-white fw-bold w-100 py-2" style={{ backgroundColor: '#FF8A00', borderRadius: '25px', letterSpacing: '1px' }}>
+                        VER MÁS
+                    </button>
+                    </div>
+                </div>
+                </div>
+
+                {/* Tarjeta 3 */}
+                <div className="col-md-4">
+                <div className="card h-100 border-0 shadow-lg" style={{ backgroundColor: '#FDFCF7', borderRadius: '12px', overflow: 'hidden' }}>
+                    <div style={{ height: '180px', background: 'url("https://images.unsplash.com/photo-1533873984035-25970ab07461?auto=format&fit=crop&w=600&q=80") center/cover', display: 'flex', alignItems: 'flex-end', padding: '15px' }}>
+                    <h5 className="text-white fw-bold m-0" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.8)' }}>Vacaciones familiares</h5>
+                    </div>
+                    <div className="card-body p-4 d-flex flex-column justify-content-between">
+                    <ul className="list-unstyled text-muted small lh-lg mb-4">
+                        <li>🎢 Parque de Aventura Quaras</li>
+                        <li>🏊 Parque Acuático Embalse</li>
+                        <li>🏞️ Peñón del Águila</li>
+                    </ul>
+                    <button className="btn text-white fw-bold w-100 py-2" style={{ backgroundColor: '#FF8A00', borderRadius: '25px', letterSpacing: '1px' }}>
+                        VER MÁS
+                    </button>
+                    </div>
+                </div>
+                </div>
+
+            </div>
+            </div>
+        </div>
+
+        </div>
+    );
+    };
