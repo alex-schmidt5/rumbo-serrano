@@ -36,7 +36,12 @@
     // POST (Crear actividad)
     router.post('/', verificarToken, esAdmin, async (req, res) => {
     try {
-        const nuevaActividad = await Actividad.create(req.body);
+        const datos = { ...req.body };
+        // Si no llega categoria_id o llega vacío, le asignamos 1 por defecto
+        if (!datos.categoria_id) {
+        datos.categoria_id = 1;
+        }
+        const nuevaActividad = await Actividad.create(datos);
         res.status(201).json(nuevaActividad);
     } catch (error) {
         res.status(400).json({ error: error.message });

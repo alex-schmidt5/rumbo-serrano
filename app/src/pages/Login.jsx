@@ -43,7 +43,13 @@
             }}
         >
             <div className="text-center mb-3">
-            <span style={{ fontSize: '2.5rem' }}>🏔️</span>
+            {/* Logo con Imagen reemplazando el emoji */}
+            <img 
+                src="/logo.png" 
+                alt="Logo Rumbo Serrano" 
+                className="mb-2"
+                style={{ width: '60px', height: '60px', objectFit: 'contain' }} 
+            />
             <h4 className="fw-black mb-0" style={{ letterSpacing: '2px', color: '#3A3935' }}>RUMBO SERRANO</h4>
             <p className="text-muted small mb-0">Iniciar Sesión</p>
             </div>

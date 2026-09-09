@@ -18,8 +18,31 @@ export const Actividad = sequelize.define('Actividad', {
   },
   duracion: DataTypes.STRING,
   ubicacion: DataTypes.STRING,
+  imagen: {                    
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
   categoria_id: {
     type: DataTypes.INTEGER,
     allowNull: false
+  },
+  // --- RANGO DE FECHAS Y CUPOS ---
+  fecha_inicio: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  fecha_fin: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  cupo_maximo: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 10
+  },
+  cupo_disponible: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 10
   }
 }, { tableName: 'actividades' });

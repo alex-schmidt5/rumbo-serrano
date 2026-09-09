@@ -6,6 +6,8 @@
     import { Home } from './pages/Home';
     import { AdminDashboard } from './pages/AdminDashboard';
     import { RutaProtegida } from './components/RutaProtegida';
+    import { Actividades } from './pages/Actividades';
+    import { ActividadDetalle } from './pages/ActividadDetalle.jsx';
 
     export default function App() {
     return (
@@ -18,6 +20,8 @@
                 <Route path="/home" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/registro" element={<Registro />} />
+                <Route path="/actividades" element={<Actividades />} />
+                <Route path="/actividades/:id" element={<ActividadDetalle />} />
 
                 <Route
                 path="/admin"

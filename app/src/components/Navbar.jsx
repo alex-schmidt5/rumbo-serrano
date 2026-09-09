@@ -13,9 +13,15 @@
     return (
         <nav className="navbar navbar-expand-lg px-4 py-3" style={{ backgroundColor: '#F0EBE1', borderBottom: '1px solid #D6CEC2' }}>
         <div className="container-fluid d-flex justify-content-between align-items-center">
-            {/* Logo Branding */}
+            
+            {/* Logo Branding leyendo directamente desde la carpeta /public */}
             <Link to="/home" className="navbar-brand d-flex align-items-center gap-2">
-            <span style={{ fontSize: '1.8rem' }}>🏔️</span>
+            <img 
+                src="/logo.png" 
+                alt="Logo Rumbo Serrano" 
+                style={{ width: '40px', height: '40px', objectFit: 'contain' }} 
+            />
+            
             <div className="lh-1">
                 <span className="fw-black text-uppercase d-block tracking-wider" style={{ color: '#3A3935', letterSpacing: '2px', fontWeight: '800' }}>
                 RUMBO
@@ -25,12 +31,11 @@
                 </span>
             </div>
             </Link>
-
             {/* Links de Navegación */}
             <div className="d-none d-md-flex gap-4 fw-bold text-uppercase" style={{ fontSize: '0.85rem', letterSpacing: '1px' }}>
-            <Link to="/home" className="text-decoration-none" style={{ color: '#4A463D' }}>INICIO</Link>
-            <a href="#actividades" className="text-decoration-none" style={{ color: '#8A847A' }}>ACTIVIDADES</a>
-            <a href="#reservas" className="text-decoration-none" style={{ color: '#8A847A' }}>RESERVAS</a>
+                <Link to="/home" className="text-decoration-none" style={{ color: '#4A463D' }}>INICIO</Link>
+                <Link to="/actividades" className="text-decoration-none" style={{ color: '#4A463D' }}>ACTIVIDADES</Link>
+                <Link to="/reservas" className="text-decoration-none" style={{ color: '#8A847A' }}>RESERVAS</Link>
             </div>
 
             {/* Sección de Usuario / Acceso */}
@@ -63,6 +68,7 @@
                 </div>
             )}
             </div>
+
         </div>
         </nav>
     );
