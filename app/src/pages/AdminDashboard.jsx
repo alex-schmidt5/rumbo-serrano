@@ -230,13 +230,6 @@ export const AdminDashboard = () => {
                 <span>ACTIVIDADES ({actividades.length})</span> <span>❯</span>
                 </button>
 
-                <button 
-                onClick={() => setSeccionActual('destinos')}
-                className={`btn text-start text-uppercase fw-bold border-0 p-2 d-flex justify-content-between align-items-center ${seccionActual === 'destinos' ? 'bg-white shadow-sm rounded-3' : ''}`}
-                style={{ color: '#4A463D', fontSize: '0.82rem' }}
-                >
-                <span>DESTINOS</span> <span>❯</span>
-                </button>
 
                 <button 
                 onClick={() => setSeccionActual('categorias')}
@@ -433,12 +426,7 @@ export const AdminDashboard = () => {
             </div>
             )}
 
-            {seccionActual === 'destinos' && (
-            <div className="p-4 shadow-lg text-center" style={{ backgroundColor: '#F0EBE1', borderRadius: '25px' }}>
-                <h3 className="fw-bold">Gestión de Destinos</h3>
-                <p className="text-muted">Próximamente: Control de lugares geográficos.</p>
-            </div>
-            )}
+
 
             {seccionActual === 'categorias' && (
             <div className="p-4 shadow-lg text-center" style={{ backgroundColor: '#F0EBE1', borderRadius: '25px' }}>
