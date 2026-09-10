@@ -1,7 +1,7 @@
-    import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
-    // Verificar si el usuario envió un token válido
-    export const verificarToken = (req, res, next) => {
+// Verificar si el usuario envió un token válido
+export const verificarToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; // Formato: "Bearer TOKEN"
 
@@ -16,13 +16,22 @@
     } catch (error) {
         res.status(403).json({ mensaje: 'Token inválido o expirado' });
     }
-    };
+};
 
-    // Verificar si el usuario tiene rol 'admin'
-    export const esAdmin = (req, res, next) => {
+// Verificar si el usuario tiene rol 'admin'
+export const esAdmin = (req, res, next) => {
     if (req.usuario && req.usuario.rol === 'admin') {
         next();
     } else {
         res.status(403).json({ mensaje: 'Acceso restringido: requiere permisos de Administrador' });
     }
-    };
+};
+
+// Verificar si el usuario es 'admin' O 'operador' (Para gestión de actividades)
+export const esAdminUOperador = (req, res, next) => {
+    if (req.usuario && (req.usuario.rol === 'admin' || req.usuario.rol === 'operador')) {
+        next();
+    } else {
+        res.status(403).json({ mensaje: 'Acceso restringido: requiere permisos de Administrador u Operador' });
+    }
+};

@@ -11,5 +11,9 @@ export const Categoria = sequelize.define('Categoria', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  descripcion: DataTypes.TEXT
+  descripcion: DataTypes.TEXT,
+  imagen_url: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  }
 }, { tableName: 'categorias' });

@@ -26,7 +26,7 @@ export const Usuario = sequelize.define('Usuario', {
   apellido: DataTypes.STRING,
   telefono: DataTypes.STRING,
   rol: {
-    type: DataTypes.ENUM('cliente', 'admin'),
+    type: DataTypes.ENUM('cliente', 'admin', 'operador'),
     defaultValue: 'cliente'
   }
 }, { tableName: 'usuarios' });
