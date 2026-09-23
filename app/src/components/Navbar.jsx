@@ -14,66 +14,132 @@ export const Navbar = () => {
     };
 
     return (
-        <nav className="navbar navbar-expand-lg px-4 py-3" style={{ backgroundColor: '#F0EBE1', borderBottom: '1px solid #D6CEC2' }}>
-        <div className="container-fluid d-flex justify-content-between align-items-center">
-            
-            {/* Logo Branding leyendo directamente desde la carpeta /public */}
-            <Link to="/home" className="navbar-brand d-flex align-items-center gap-2">
-            <img 
-                src="/logo.png" 
-                alt="Logo Rumbo Serrano" 
-                style={{ width: '40px', height: '40px', objectFit: 'contain' }} 
-            />
-            
-            <div className="lh-1">
-                <span className="fw-black text-uppercase d-block tracking-wider" style={{ color: '#3A3935', letterSpacing: '2px', fontWeight: '800' }}>
-                RUMBO
-                </span>
-                <span className="fst-italic" style={{ color: '#635D55', fontFamily: 'serif', fontSize: '0.95rem' }}>
-                Serrano
-                </span>
-            </div>
-            </Link>
+        <nav 
+            className="navbar navbar-expand-lg px-3 px-md-4 py-3 sticky-top" 
+            style={{ 
+                backgroundColor: '#121212', 
+                borderBottom: '1px solid #2A2A2A',
+                zIndex: 1000 
+            }}
+        >
+            <div className="container-fluid d-flex justify-content-between align-items-center">
+                
+                {/* Logo / Branding */}
+                <Link to="/home" className="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
+                    <img 
+                        src="/logo.png" 
+                        alt="Logo Rumbo Serrano" 
+                        style={{ width: '38px', height: '38px', objectFit: 'contain' }} 
+                        onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                    
+                    <div className="lh-sm">
+                        <span 
+                            className="d-block text-uppercase fw-bold text-white" 
+                            style={{ letterSpacing: '1.5px', fontSize: '1rem', lineHeight: '1' }}
+                        >
+                            RUMBO
+                        </span>
+                        <span 
+                            className="fst-italic" 
+                            style={{ fontFamily: 'Georgia, serif', fontSize: '0.85rem', color: '#A0A0A0' }}
+                        >
+                            Serrano
+                        </span>
+                    </div>
+                </Link>
 
-            {/* Links de Navegación */}
-            <div className="d-none d-md-flex gap-4 fw-bold text-uppercase" style={{ fontSize: '0.85rem', letterSpacing: '1px' }}>
-                <Link to="/home" className="text-decoration-none" style={{ color: '#4A463D' }}>INICIO</Link>
-                <Link to="/actividades" className="text-decoration-none" style={{ color: '#4A463D' }}>ACTIVIDADES</Link>
-                <Link to="/reservas" className="text-decoration-none" style={{ color: '#8A847A' }}>RESERVAS</Link>
-            </div>
-
-            {/* Sección de Usuario / Acceso */}
-            <div className="d-flex align-items-center gap-3">
-            <button className="btn btn-link text-dark p-0 me-2" title="Carrito">
-                🛒
-            </button>
-            {usuario ? (
-                <div className="d-flex align-items-center gap-2">
-                <span className="badge px-3 py-2 text-dark rounded-pill" style={{ backgroundColor: '#E3DCCE', fontSize: '0.8rem' }}>
-                    👤 {usuario.nombre_usuario}
-                </span>
-                {puedeAccederPanel && (
-                    <Link to="/admin" className="btn btn-sm fw-bold px-3 py-1 rounded-pill" style={{ backgroundColor: '#72C253', color: '#FFF' }}>
-                    PANEL
+                {/* Links de Navegación Principal */}
+                <div 
+                    className="d-none d-md-flex align-items-center gap-4 fw-semibold text-uppercase" 
+                    style={{ fontSize: '0.825rem', letterSpacing: '1px' }}
+                >
+                    <Link 
+                        to="/home" 
+                        className="text-decoration-none text-white-50 hover-white"
+                        style={{ transition: 'color 0.2s ease' }}
+                    >
+                        Inicio
                     </Link>
-                )}
-                <button onClick={handleLogout} className="btn btn-outline-danger btn-sm rounded-pill px-3 py-1" style={{ fontSize: '0.75rem' }}>
-                    Salir
-                </button>
+                    <Link 
+                        to="/actividades" 
+                        className="text-decoration-none text-white-50 hover-white"
+                        style={{ transition: 'color 0.2s ease' }}
+                    >
+                        Actividades
+                    </Link>
+                    <Link 
+                        to="/reservas" 
+                        className="text-decoration-none text-white-50 hover-white"
+                        style={{ transition: 'color 0.2s ease' }}
+                    >
+                        Reservas
+                    </Link>
                 </div>
-            ) : (
-                <div className="d-flex gap-2">
-                <Link to="/login" className="btn btn-outline-dark btn-sm fw-bold px-3 py-1 rounded-pill" style={{ fontSize: '0.8rem' }}>
-                    INGRESAR
-                </Link>
-                <Link to="/registro" className="btn btn-sm fw-bold px-3 py-1 rounded-pill text-white" style={{ backgroundColor: '#72C253', fontSize: '0.8rem' }}>
-                    REGISTRARSE
-                </Link>
-                </div>
-            )}
-            </div>
 
-        </div>
+                {/* Sección de Usuario / Acceso */}
+                <div className="d-flex align-items-center gap-3">
+                    
+                    {/* Botón Carrito */}
+                    <button 
+                        className="btn rounded-circle p-2 d-flex align-items-center justify-content-center border-0 text-white" 
+                        title="Carrito de compras"
+                        style={{ width: '38px', height: '38px', backgroundColor: '#242424' }}
+                    >
+                        🛒
+                    </button>
+
+                    {usuario ? (
+                        <div className="d-flex align-items-center gap-2">
+                            {/* Insignia de Usuario */}
+                            <span 
+                                className="badge text-white fw-semibold px-3 py-2 border" 
+                                style={{ borderRadius: '20px', fontSize: '0.8rem', backgroundColor: '#1E1E1E', borderColor: '#333333' }}
+                            >
+                                👤 {usuario.nombre_usuario}
+                            </span>
+
+                            {/* Acceso al Panel si corresponde */}
+                            {puedeAccederPanel && (
+                                <Link 
+                                    to="/admin" 
+                                    className="btn btn-light btn-sm fw-semibold px-3 py-1.5"
+                                    style={{ borderRadius: '8px', fontSize: '0.8rem' }}
+                                >
+                                    Panel
+                                </Link>
+                            )}
+
+                            {/* Botón Salir */}
+                            <button 
+                                onClick={handleLogout} 
+                                className="btn btn-outline-danger btn-sm px-3 py-1.5 fw-medium" 
+                                style={{ borderRadius: '8px', fontSize: '0.8rem' }}
+                            >
+                                Salir
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="d-flex gap-2">
+                            <Link 
+                                to="/login" 
+                                className="btn btn-outline-light btn-sm fw-semibold px-3 py-2" 
+                                style={{ borderRadius: '8px', fontSize: '0.825rem' }}
+                            >
+                                Ingresar
+                            </Link>
+                            <Link 
+                                to="/registro" 
+                                className="btn btn-light btn-sm fw-semibold px-3 py-2 text-dark" 
+                                style={{ borderRadius: '8px', fontSize: '0.825rem' }}
+                            >
+                                Registrarse
+                            </Link>
+                        </div>
+                    )}
+                </div>
+
+            </div>
         </nav>
     );
 };

@@ -1,158 +1,229 @@
 import { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
 export const Actividades = () => {
     const [actividades, setActividades] = useState([]);
+    const [categorias, setCategorias] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
+    const [busqueda, setBusqueda] = useState('');
+    
     const [searchParams, setSearchParams] = useSearchParams();
-    const categoriaFiltro = searchParams.get('categoria');
+    const categoriaSeleccionada = searchParams.get('categoria') || '';
+    
+    const navigate = useNavigate();
 
     useEffect(() => {
-        obtenerActividades();
-    }, [categoriaFiltro]);
+        setLoading(true);
+        Promise.all([
+            axios.get('http://localhost:3000/api/actividades'),
+            axios.get('http://localhost:3000/api/categorias')
+        ])
+        .then(([resAct, resCat]) => {
+            setActividades(resAct.data);
+            setCategorias(resCat.data);
+        })
+        .catch(err => console.error('Error al cargar actividades:', err))
+        .finally(() => setLoading(false));
+    }, []);
 
-    const obtenerActividades = async () => {
-        try {
-            setLoading(true);
-            const res = await axios.get('http://localhost:3000/api/actividades');
-            let datos = res.data;
-
-            if (categoriaFiltro) {
-                datos = datos.filter(act => String(act.categoria_id) === String(categoriaFiltro));
-            }
-
-            setActividades(datos);
-        } catch (err) {
-            console.error('Error al cargar actividades:', err);
-            setError('No se pudieron cargar las actividades. Intenta nuevamente.');
-        } finally {
-            setLoading(false);
+    // Manejo de cambio de filtro de categoría
+    const handleCategoriaChange = (idCat) => {
+        if (idCat === categoriaSeleccionada) {
+            setSearchParams({});
+        } else {
+            setSearchParams({ categoria: idCat });
         }
     };
 
-    if (loading) {
-        return (
-            <div className="d-flex justify-content-center align-items-center min-vh-100" style={{ backgroundColor: '#2B2B2B' }}>
-                <div className="spinner-border text-light" role="status"></div>
-            </div>
-        );
-    }
+    // Filtrar actividades según buscador y categoría seleccionada
+    const actividadesFiltradas = actividades.filter((act) => {
+        const coincideCategoria = !categoriaSeleccionada || String(act.categoria_id) === String(categoriaSeleccionada);
+        const coincideBusqueda = act.titulo?.toLowerCase().includes(busqueda.toLowerCase()) ||
+                                 act.descripcion?.toLowerCase().includes(busqueda.toLowerCase()) ||
+                                 act.ubicacion?.toLowerCase().includes(busqueda.toLowerCase());
+        return coincideCategoria && coincideBusqueda;
+    });
 
     return (
-        <div className="py-5" style={{ backgroundColor: '#2B2B2B', minHeight: '100vh', color: '#F0EBE1' }}>
-            <div className="container">
-
-                {/* Encabezado */}
-                <div className="text-center mb-5">
-                    <h2 className="fw-black text-uppercase tracking-wider display-5" style={{ letterSpacing: '2px' }}>
-                        ACTIVIDADES EN CALAMUCHITA
-                    </h2>
-                    <p className="lead text-muted" style={{ color: '#D6CEC2' }}>
-                        Descubrí la aventura que mejor se adapta a vos
+        <div style={{ backgroundColor: '#FFFFFF', minHeight: '100vh', color: '#222222', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+            
+            {/* Header de la Sección */}
+            <div className="container pt-5 pb-3">
+                <div className="border-bottom pb-4">
+                    <span className="badge bg-dark text-white rounded-pill px-3 py-1 fw-bold mb-2" style={{ fontSize: '0.75rem' }}>
+                        Catálogo Completo
+                    </span>
+                    <h1 className="fw-bold text-dark display-5 mb-2">Descubrí tu próxima aventura</h1>
+                    <p className="text-muted m-0 fs-6">
+                        Explorá las mejores experiencias outdoor, recorridos culturales y excursiones en el Valle de Calamuchita.
                     </p>
-
-                    {categoriaFiltro && (
-                        <div className="mt-3">
-                            <span className="badge bg-warning text-dark px-3 py-2 rounded-pill fs-6 me-2">
-                                Filtrado por Categoría
-                            </span>
-                            <button
-                                className="btn btn-sm btn-outline-light rounded-pill px-3"
-                                onClick={() => setSearchParams({})}
-                            >
-                                ✖ Ver todas las actividades
-                            </button>
-                        </div>
-                    )}
                 </div>
+            </div>
 
-                {error && (
-                    <div className="alert alert-danger text-center rounded-4 shadow" role="alert">
-                        {error}
-                    </div>
-                )}
-
-                {/* Grilla de Actividades */}
-                <div className="row g-4">
-                    {actividades.length === 0 ? (
-                        <div className="col-12 text-center py-5">
-                            <p className="fs-5 text-muted">No hay actividades disponibles para esta categoría en este momento.</p>
-                        </div>
-                    ) : (
-                        actividades.map((act) => (
-                            <div key={act.id} className="col-12 col-md-6 col-lg-4">
-                                <div
-                                    className="card h-100 border-0 shadow-lg overflow-hidden transition-all"
-                                    style={{ backgroundColor: '#F0EBE1', borderRadius: '20px', color: '#3A3935' }}
+            {/* Buscador y Filtros por Categoría */}
+            <div className="container my-4">
+                <div className="row g-3 align-items-center mb-4">
+                    {/* Buscador de texto */}
+                    <div className="col-12 col-md-5">
+                        <div className="position-relative">
+                            <input 
+                                type="text"
+                                className="form-control px-4 py-2.5 shadow-sm border"
+                                style={{ borderRadius: '12px', borderColor: '#E2E8F0', fontSize: '0.9rem', backgroundColor: '#F8FAFC' }}
+                                placeholder="Buscar por título, lugar o descripción..."
+                                value={busqueda}
+                                onChange={(e) => setBusqueda(e.target.value)}
+                            />
+                            {busqueda && (
+                                <button 
+                                    onClick={() => setBusqueda('')} 
+                                    className="btn btn-link text-muted position-absolute end-0 top-50 translate-middle-y text-decoration-none me-2"
                                 >
-                                    {/* Contenedor de Imagen con Alto Fijo */}
-                                    <div style={{ height: '220px', overflow: 'hidden', position: 'relative' }}>
-                                        <img
-                                            src={act.imagen || 'https://via.placeholder.com/400x250?text=Sin+Imagen'}
-                                            alt={act.titulo}
-                                            className="w-100 h-100"
-                                            style={{ objectFit: 'cover' }}
-                                            onError={(e) => { e.target.src = 'https://via.placeholder.com/400x250?text=Sin+Imagen'; }}
-                                        />
-                                        {act.duracion && (
-                                            <span
-                                                className="badge position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill shadow-sm"
-                                                style={{ backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)', color: '#FFF' }}
-                                            >
-                                                ⏱️ {act.duracion}
-                                            </span>
-                                        )}
-                                    </div>
+                                    ✕
+                                </button>
+                            )}
+                        </div>
+                    </div>
 
-                                    {/* Cuerpo de la Card */}
-                                    <div className="card-body p-4 d-flex flex-column justify-content-between">
-                                        <div>
-                                            {act.ubicacion && (
-                                                <p className="small text-uppercase fw-bold text-muted mb-1 d-flex align-items-center gap-1">
-                                                    📍 {act.ubicacion}
-                                                </p>
-                                            )}
+                    {/* Chips de Categorías */}
+                    <div className="col-12 col-md-7">
+                        <div className="d-flex flex-wrap gap-2 justify-md-content-end">
+                            <button
+                                onClick={() => setSearchParams({})}
+                                className={`btn btn-sm rounded-pill px-3 py-2 fw-semibold ${!categoriaSeleccionada ? 'btn-dark' : 'btn-outline-secondary'}`}
+                                style={{ fontSize: '0.8rem' }}
+                            >
+                                Todas
+                            </button>
+                            {categorias.map((cat) => (
+                                <button
+                                    key={cat.id}
+                                    onClick={() => handleCategoriaChange(cat.id)}
+                                    className={`btn btn-sm rounded-pill px-3 py-2 fw-semibold ${String(categoriaSeleccionada) === String(cat.id) ? 'btn-dark' : 'btn-outline-secondary'}`}
+                                    style={{ fontSize: '0.8rem' }}
+                                >
+                                    {cat.nombre}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                                            <h4 className="fw-bold mb-2">{act.titulo}</h4>
+            {/* Lista de Actividades en Cards Horizontales (Texto Izquierda / Imagen Derecha) */}
+            <div className="container pb-5">
+                {loading ? (
+                    <div className="text-center py-5 text-muted">
+                        <div className="spinner-border spinner-border-sm me-2" role="status"></div>
+                        <span>Cargando catálogo de actividades...</span>
+                    </div>
+                ) : actividadesFiltradas.length === 0 ? (
+                    <div className="text-center py-5 border rounded-4 my-3 bg-light">
+                        <h5 className="fw-bold text-dark mb-1">No encontramos actividades</h5>
+                        <p className="text-muted small mb-3">Probá cambiando los términos de búsqueda o el filtro de categoría.</p>
+                        <button 
+                            onClick={() => { setBusqueda(''); setSearchParams({}); }} 
+                            className="btn btn-outline-dark btn-sm fw-bold px-3 py-2 rounded-3"
+                        >
+                            Limpiar filtros
+                        </button>
+                    </div>
+                ) : (
+                    <div className="d-flex flex-column gap-4">
+                        {actividadesFiltradas.map((act) => {
+                            const imagenUrl = act.imagen_url || act.imagen || 'https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=1200&q=80';
+                            const nombreCategoria = categorias.find(c => String(c.id) === String(act.categoria_id))?.nombre || 'Experiencia Serrano';
 
-                                            {act.descripcion && (
-                                                <p className="small text-secondary mb-3" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                                                    {act.descripcion}
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        {/* Precio y Botón de Detalle */}
-                                        <div className="pt-3 border-top d-flex justify-content-between align-items-center mt-3">
+                            return (
+                                <div 
+                                    key={act.id} 
+                                    className="card border-0 rounded-4 overflow-hidden shadow-sm bg-dark text-white"
+                                    style={{ transition: 'transform 0.2s ease, box-shadow 0.2s ease' }}
+                                >
+                                    <div className="row g-0 align-items-stretch">
+                                        
+                                        {/* Columna Izquierda: Texto y Contenido */}
+                                        <div className="col-12 col-md-7 p-4 p-md-5 d-flex flex-column justify-content-between position-relative z-1" style={{ backgroundColor: '#18181B' }}>
                                             <div>
-                                                <span className="small text-muted d-block">Precio por persona</span>
-                                                <strong className="fs-4 text-success">${Number(act.precio).toLocaleString()}</strong>
+                                                {/* Categoría y Ubicación */}
+                                                <div className="d-flex align-items-center gap-2 mb-2">
+                                                    <span className="badge bg-white text-dark rounded-pill px-3 py-1 fw-bold" style={{ fontSize: '0.75rem' }}>
+                                                        {nombreCategoria}
+                                                    </span>
+                                                    <span className="text-white-50 small">
+                                                        Ubicación: {act.ubicacion || 'Calamuchita, Córdoba'}
+                                                    </span>
+                                                </div>
+
+                                                {/* Título y Descripción */}
+                                                <h3 className="fw-bold mb-2 text-white fs-3">
+                                                    {act.titulo}
+                                                </h3>
+
+                                                <p className="text-white-50 small mb-4" style={{ lineHeight: '1.6', maxWidth: '580px' }}>
+                                                    {act.descripcion || 'Disfrutá de un recorrido guiado inolvidable con guías experimentados e indumentaria de seguridad incluida.'}
+                                                </p>
+
+                                                {/* Atributos adicionales */}
+                                                <div className="d-flex flex-wrap gap-2 mb-4" style={{ fontSize: '0.8rem' }}>
+                                                    <span className="bg-secondary bg-opacity-25 px-3 py-1 rounded-pill text-white border border-secondary border-opacity-25">
+                                                        Duración: {act.duracion ? act.duracion : 'Medio día'}
+                                                    </span>
+                                                    <span className="bg-secondary bg-opacity-25 px-3 py-1 rounded-pill text-white border border-secondary border-opacity-25">
+                                                        Cupos: {act.cupo_disponible || 'Consultar'}
+                                                    </span>
+                                                </div>
                                             </div>
 
-                                            <Link
-                                                to={act.cupo_disponible <= 0 ? '#' : `/actividades/${act.id}`}
-                                                className={`btn fw-bold px-3 py-2 rounded-pill shadow-sm text-white ${act.cupo_disponible <= 0 ? 'disabled opacity-50' : ''}`}
-                                                style={{
-                                                    backgroundColor: act.cupo_disponible <= 0 ? '#6c757d' : '#72C253',
-                                                    textDecoration: 'none',
-                                                    pointerEvents: act.cupo_disponible <= 0 ? 'none' : 'auto'
+                                            {/* Precio y Botón */}
+                                            <div className="pt-3 border-top border-secondary border-opacity-25 d-flex align-items-center justify-content-between flex-wrap gap-3">
+                                                <div>
+                                                    <span className="d-block text-white-50 small text-uppercase" style={{ fontSize: '0.7rem', letterSpacing: '1px' }}>
+                                                        Desde
+                                                    </span>
+                                                    <span className="fw-bold fs-3 text-white">
+                                                        ${Number(act.precio || 0).toLocaleString()} <span className="fs-6 fw-normal text-white-50">ARS</span>
+                                                    </span>
+                                                </div>
+
+                                                <button
+                                                    onClick={() => navigate(`/actividades/${act.id}`)}
+                                                    className="btn btn-light fw-bold px-4 py-2.5 text-nowrap shadow-sm"
+                                                    style={{ borderRadius: '10px', fontSize: '0.875rem' }}
+                                                >
+                                                    Ver detalle y reservar
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Columna Derecha: Imagen */}
+                                        <div className="col-12 col-md-5 position-relative" style={{ minHeight: '260px' }}>
+                                            <img 
+                                                src={imagenUrl} 
+                                                alt={act.titulo}
+                                                className="w-100 h-100 position-absolute top-0 start-0"
+                                                style={{ objectFit: 'cover' }}
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = 'https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=1200&q=80';
                                                 }}
-                                            >
-                                                {act.cupo_disponible <= 0 ? 'SIN LUGARES' : 'VER MÁS'}
-                                            </Link>
+                                            />
+                                            {/* Gradiente suave en móvil/escritorio para integrarse con la tarjeta */}
+                                            <div 
+                                                className="position-absolute top-0 start-0 w-100 h-100 d-none d-md-block"
+                                                style={{ background: 'linear-gradient(90deg, #18181B 0%, transparent 20%)' }}
+                                            />
                                         </div>
 
                                     </div>
                                 </div>
-                            </div>
-                        ))
-                    )}
-                </div>
-
+                            );
+                        })}
+                    </div>
+                )}
             </div>
+
         </div>
     );
 };
